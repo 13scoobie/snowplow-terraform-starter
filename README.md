@@ -10,6 +10,20 @@ The documentation is written with [Terraform](https://www.terraform.io/)
 
 This repository may double as way to quickly create a working Snowplow Analytics stack.
 
+1. `git clone https://github.com/fingerco/snowplow-terraform-starter.git && cd snowplow-terraform-starter`
+
+1. `cp variables.tf.example variables.tf`
+
+1. Modify variables.tf to configure everything
+
+1. `terraform init`
+
+1. `terraform plan`
+
+1. `terraform apply`
+
+1. `terraform destroy`
+
 **Note:** Due to the extreme levels of customization that can happen in such a stack, I cannot promise that this setup will fit your exact needs.
 
 I encourage you to look through this, understand it, and modify it as you need.

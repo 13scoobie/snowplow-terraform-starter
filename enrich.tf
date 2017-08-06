@@ -62,7 +62,7 @@ resource "aws_instance" "Enrich" {
       "sed -i -e 's/{{enrichStreamsOutMinBackoff}}/${var.enrich_stream_out_min_backoff}/g' config.hocon",
       "sed -i -e 's/{{enrichStreamsAppName}}/${aws_dynamodb_table.EnrichApp.name}/g' config.hocon",
       "sed -i -e 's/{{enrichStreamsRegion}}/${var.aws_region}/g' config.hocon",
-      "wget http://dl.bintray.com/snowplow/snowplow-generic/snowplow_stream_enrich_${var.enrich_version}.zip",
+      "wget https://dl.bintray.com/snowplow/snowplow-generic/snowplow_stream_enrich_${var.enrich_version}.zip",
       "unzip snowplow_stream_enrich_${var.enrich_version}.zip",
       "chmod +x snowplow_stream_enrich_${var.enrich_version}",
       "sudo nohup ./snowplow_stream_enrich_${var.enrich_version} --config config.hocon --resolver resolver.json &",

@@ -74,10 +74,10 @@ resource "aws_instance" "S3Sink" {
       "sed -i -e 's/{{sinkStreamInByteLimit}}/${var.s3_sink_byte_thresh}/g' config.hocon",
       "sed -i -e 's/{{sinkStreamInRecordLimit}}/${var.s3_sink_record_thresh}/g' config.hocon",
       "sed -i -e 's/{{sinkStreamInTimeLimit}}/${var.s3_sink_time_thresh}/g' config.hocon",
-      "wget http://dl.bintray.com/snowplow/snowplow-generic/kinesis_s3_${var.s3_sink_version}.zip",
+      "wget https://dl.bintray.com/snowplow/snowplow-generic/kinesis_s3_${var.s3_sink_version}.zip",
       "unzip kinesis_s3_${var.s3_sink_version}.zip",
-      "chmod +x kinesis-lzo-sink-${var.s3_sink_version}",
-      "sudo nohup ./kinesis-lzo-sink-${var.s3_sink_version} --config config.hocon &",
+      "chmod +x snowplow-kinesis-s3-${var.s3_sink_version}",
+      "sudo nohup ./snowplow-kinesis-s3-${var.s3_sink_version} --config config.hocon &",
       "sleep 2"
     ]
 

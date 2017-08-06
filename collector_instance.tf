@@ -69,7 +69,7 @@ resource "aws_instance" "Collector" {
       "sed -i -e 's/{{collectorKinesisStreamBadName}}/${aws_kinesis_stream.CollectorBad.name}/g' config.hocon",
       "sed -i -e 's/{{collectorSinkKinesisMinBackoffMillis}}/${var.collector_kinesis_min_backoff}/g' config.hocon",
       "sed -i -e 's/{{collectorSinkKinesisMaxBackoffMillis}}/${var.collector_kinesis_max_backoff}/g' config.hocon",
-      "wget http://dl.bintray.com/snowplow/snowplow-generic/snowplow_scala_stream_collector_${var.collector_version}.zip",
+      "wget https://dl.bintray.com/snowplow/snowplow-generic/snowplow_scala_stream_collector_${var.collector_version}.zip",
       "unzip snowplow_scala_stream_collector_${var.collector_version}.zip",
       "chmod +x snowplow-stream-collector-${var.collector_version}",
       "sudo nohup ./snowplow-stream-collector-${var.collector_version} --config config.hocon &",

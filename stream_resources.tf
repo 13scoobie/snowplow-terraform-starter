@@ -1,4 +1,4 @@
-resource "aws_dynamodb_table" "EnrichInRead" {
+resource "aws_dynamodb_table" "EnrichApp" {
   name           = "${var.enrich_app_name}"
   read_capacity  = 5
   write_capacity = 5
@@ -11,6 +11,24 @@ resource "aws_dynamodb_table" "EnrichInRead" {
 
   tags {
     Name        = "${var.enrich_app_name}"
+    Environment = "production"
+    SnowplowProccess = "enrich"
+  }
+}
+
+resource "aws_dynamodb_table" "S3SinkApp" {
+  name           = "${var.s3_sink_app_name}"
+  read_capacity  = 5
+  write_capacity = 5
+  hash_key       = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  tags {
+    Name        = "${var.s3_sink_app_name}"
     Environment = "production"
     SnowplowProccess = "enrich"
   }
@@ -77,5 +95,21 @@ resource "aws_kinesis_stream" "EnrichBad" {
   tags {
     Environment = "production"
     SnowplowProccess = "enrich"
+  }
+}
+
+resource "aws_kinesis_stream" "S3SinkBad" {
+  name             = "${var.s3_sink_out_bad}"
+  shard_count      = 1
+  retention_period = 48
+
+  shard_level_metrics = [
+    "IncomingBytes",
+    "OutgoingBytes",
+  ]
+
+  tags {
+    Environment = "production"
+    SnowplowProccess = "sink"
   }
 }

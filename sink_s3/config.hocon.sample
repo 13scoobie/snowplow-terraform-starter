@@ -1,0 +1,30 @@
+aws {
+  access-key: "default"
+  secret-key: "default"
+}
+
+kinesis {
+  region: "{{sinkStreamRegion}}"
+  app-name: "{{sinkStreamAppName}}"
+
+  in {
+    stream-name: "{{sinkStreamIn}}"
+    initial-position: "LATEST"
+    max-records: 100
+  }
+
+  out {
+    stream-name: "{{sinkStreamBad}}"
+    shards: 1
+  }
+}
+
+s3 {
+  endpoint: "http://s3.{{sinkStreamRegion}}.amazonaws.com"
+  bucket: "{{sinkS3BucketName}}"
+  format: "lzo"
+  max-timeout: 5000
+  byte-limit: {{sinkStreamInByteLimit}}
+  record-limit: {{sinkStreamInRecordLimit}}
+  time-limit: {{sinkStreamInTimeLimit}}
+}

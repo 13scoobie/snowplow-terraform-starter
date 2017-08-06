@@ -1,11 +1,11 @@
 # AWS Config
 
 variable "aws_access_key" {
-  default = "SOME_AWS_KEY"
+  default = "SOME_ADMIN_ACCESS_KEY"
 }
 
 variable "aws_secret_key" {
-  default = "SOME_AWS_SECRET"
+  default = "SOME_ADMIN_SECRET_KEY"
 }
 
 variable "aws_region" {
@@ -13,11 +13,11 @@ variable "aws_region" {
 }
 
 variable "key_name" {
-  default = "AWS_KEY_NAME"
+  default = "SOME_PEM_KEY_NAME"
 }
 
 variable "key_path" {
-  default = "AWS_KEY_LOCAL_PEM_LOCATION"
+  default = "LOCAL_PEM_KEY_PATH"
 }
 
 variable "my_domain" {
@@ -28,22 +28,34 @@ variable "my_ip" {
   default = "YOUR_PERSONAL_IP"
 }
 
-# Data Store Config
+# S3 Analytics Storage
 
-variable "redshift_table" {
-  default = "analytics"
+variable "s3_sink_bucket_name" {
+  default = "snowplow-s3-sink"
 }
 
-variable "redshift_database" {
-  default = "analytics"
+variable "s3_sink_version" {
+  default = "0.5.0"
 }
 
-variable "redshift_username" {
-  default = "DESIRED_REDSHIFT_USERNAME"
+variable "s3_sink_app_name" {
+  default = "snowplow-s3-sink"
 }
 
-variable "redshift_password" {
-  default = "DESIRED_REDSHIFT_PASS"
+variable "s3_sink_out_bad" {
+  default = "SnowplowS3Sink-Bad"
+}
+
+variable "s3_sink_byte_thresh" {
+  default = 10240
+}
+
+variable "s3_sink_record_thresh" {
+  default = 100
+}
+
+variable "s3_sink_time_thresh" {
+  default = 5000
 }
 
 # Collector Config
@@ -57,11 +69,11 @@ variable "collector_port" {
 }
 
 variable "collector_kinesis_sink_good" {
-  default = "SnowplowGood"
+  default = "SnowplowCollector-Good"
 }
 
 variable "collector_kinesis_sink_bad" {
-  default = "SnowplowBad"
+  default = "SnowplowCollector-Bad"
 }
 
 variable "collector_kinesis_min_backoff" {
@@ -80,14 +92,14 @@ variable "collector_cookie_expiration" {
   default = "365 days"
 }
 
+variable "collector_cookie_domain" {
+  default = "pulsenet.io"
+}
+
 # Enrich Config
 
 variable "enrich_version" {
   default = "0.10.0"
-}
-
-variable "enrich_stream_in" {
-  default = "SnowplowGood"
 }
 
 variable "enrich_stream_in_byte_thresh" {
@@ -103,11 +115,11 @@ variable "enrich_stream_in_time_thresh" {
 }
 
 variable "enrich_stream_out_good" {
-  default = "SnowplowEnrichedGood"
+  default = "SnowplowEnriched-Good"
 }
 
 variable "enrich_stream_out_bad" {
-  default = "SnowplowEnrichedBad"
+  default = "SnowplowEnriched-Bad"
 }
 
 variable "enrich_stream_out_min_backoff" {
@@ -119,5 +131,5 @@ variable "enrich_stream_out_max_backoff" {
 }
 
 variable "enrich_app_name" {
-  default = "SnowplowKinesisEnrich-Good"
+  default = "snowplow-kinesis-enrich"
 }

@@ -7,10 +7,10 @@ resource "aws_security_group" "Collector" {
   }
 
   ingress {
-        from_port = 80
-        to_port = 80
-        protocol = "TCP"
-        cidr_blocks = ["0.0.0.0/0"]
+    from_port = 80
+    to_port = 80
+    protocol = "TCP"
+    security_groups = ["${aws_security_group.CollectorELB.id}"]
   }
 
   ingress {
@@ -65,8 +65,8 @@ resource "aws_instance" "Collector" {
       "sed -i -e 's/{{collectorCookieName}}/${var.collector_cookie_name}/g' config.hocon",
       "sed -i -e 's/{{collectorCookieDomain}}/${var.my_domain}/g' config.hocon",
       "sed -i -e 's/{{collectorSinkKinesisStreamRegion}}/${var.aws_region}/g' config.hocon",
-      "sed -i -e 's/{{collectorKinesisStreamGoodName}}/${var.collector_kinesis_sink_good}/g' config.hocon",
-      "sed -i -e 's/{{collectorKinesisStreamBadName}}/${var.collector_kinesis_sink_bad}/g' config.hocon",
+      "sed -i -e 's/{{collectorKinesisStreamGoodName}}/${aws_kinesis_stream.CollectorGood.name}/g' config.hocon",
+      "sed -i -e 's/{{collectorKinesisStreamBadName}}/${aws_kinesis_stream.CollectorBad.name}/g' config.hocon",
       "sed -i -e 's/{{collectorSinkKinesisMinBackoffMillis}}/${var.collector_kinesis_min_backoff}/g' config.hocon",
       "sed -i -e 's/{{collectorSinkKinesisMaxBackoffMillis}}/${var.collector_kinesis_max_backoff}/g' config.hocon",
       "wget http://dl.bintray.com/snowplow/snowplow-generic/snowplow_scala_stream_collector_${var.collector_version}.zip",

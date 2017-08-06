@@ -8,6 +8,11 @@ resource "aws_iam_instance_profile" "Enrich" {
   role = "${aws_iam_role.Enrich.name}"
 }
 
+resource "aws_iam_instance_profile" "S3Sink" {
+  name = "snowplow-sink-s3-profile"
+  role = "${aws_iam_role.S3Sink.name}"
+}
+
 resource "aws_iam_role" "Collector" {
   name = "snowplow-collector"
 
@@ -98,7 +103,7 @@ resource "aws_iam_role_policy" "EnrichPolicy" {
                 "dynamodb:*"
             ],
             "Resource": [
-                "${aws_dynamodb_table.EnrichInRead.arn}"
+                "${aws_dynamodb_table.EnrichApp.arn}"
             ]
         },
         {
@@ -116,8 +121,8 @@ resource "aws_iam_role_policy" "EnrichPolicy" {
 EOF
 }
 
-resource "aws_iam_role" "SinkFirehose" {
-  name = "snowplow-sink-firehose"
+resource "aws_iam_role" "S3Sink" {
+  name = "snowplow-sink-s3"
 
   assume_role_policy = <<EOF
 {
@@ -126,7 +131,7 @@ resource "aws_iam_role" "SinkFirehose" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": "firehose.amazonaws.com"
+        "Service": "ec2.amazonaws.com"
       },
       "Effect": "Allow",
       "Sid": ""
@@ -138,9 +143,9 @@ EOF
 
 
 
-resource "aws_iam_role_policy" "SinkFirehosePolicy" {
-  name = "snowplow-sink-firehose-policy"
-  role = "${aws_iam_role.SinkFirehose.id}"
+resource "aws_iam_role_policy" "S3Sink" {
+  name = "snowplow-sink-s3-policy"
+  role = "${aws_iam_role.S3Sink.id}"
 
   policy = <<EOF
 {
@@ -149,10 +154,22 @@ resource "aws_iam_role_policy" "SinkFirehosePolicy" {
         {
             "Effect": "Allow",
             "Action": [
-                "redshift:*"
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams",
+                "kinesis:GetShardIterator",
+                "kinesis:GetRecords"
             ],
             "Resource": [
-                "*"
+                "${aws_kinesis_stream.EnrichGood.arn}"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:*"
+            ],
+            "Resource": [
+                "${aws_dynamodb_table.S3SinkApp.arn}"
             ]
         },
         {

@@ -4,7 +4,7 @@
 
 This repository is intended to be documentation of what a Snowplow (Scala Streaming) stack can look like. It attempts to explicitly state technical specifications of such a stack.
 
-The documentation is written with (Terraform)[https://www.terraform.io/]
+The documentation is written with [Terraform](https://www.terraform.io/)
 
 ## Terraform as a Starter
 

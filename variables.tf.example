@@ -1,0 +1,123 @@
+# AWS Config
+
+variable "aws_access_key" {
+  default = "SOME_AWS_KEY"
+}
+
+variable "aws_secret_key" {
+  default = "SOME_AWS_SECRET"
+}
+
+variable "aws_region" {
+  default = "us-west-2"
+}
+
+variable "key_name" {
+  default = "AWS_KEY_NAME"
+}
+
+variable "key_path" {
+  default = "AWS_KEY_LOCAL_PEM_LOCATION"
+}
+
+variable "my_domain" {
+  default = "example.com"
+}
+
+variable "my_ip" {
+  default = "YOUR_PERSONAL_IP"
+}
+
+# Data Store Config
+
+variable "redshift_table" {
+  default = "analytics"
+}
+
+variable "redshift_database" {
+  default = "analytics"
+}
+
+variable "redshift_username" {
+  default = "DESIRED_REDSHIFT_USERNAME"
+}
+
+variable "redshift_password" {
+  default = "DESIRED_REDSHIFT_PASS"
+}
+
+# Collector Config
+
+variable "collector_version" {
+  default = "0.9.0"
+}
+
+variable "collector_port" {
+  default = "80"
+}
+
+variable "collector_kinesis_sink_good" {
+  default = "SnowplowGood"
+}
+
+variable "collector_kinesis_sink_bad" {
+  default = "SnowplowBad"
+}
+
+variable "collector_kinesis_min_backoff" {
+  default = 1000
+}
+
+variable "collector_kinesis_max_backoff" {
+  default = 5000
+}
+
+variable "collector_cookie_name" {
+  default = "sp"
+}
+
+variable "collector_cookie_expiration" {
+  default = "365 days"
+}
+
+# Enrich Config
+
+variable "enrich_version" {
+  default = "0.10.0"
+}
+
+variable "enrich_stream_in" {
+  default = "SnowplowGood"
+}
+
+variable "enrich_stream_in_byte_thresh" {
+  default = 10240
+}
+
+variable "enrich_stream_in_record_thresh" {
+  default = 100
+}
+
+variable "enrich_stream_in_time_thresh" {
+  default = 5000
+}
+
+variable "enrich_stream_out_good" {
+  default = "SnowplowEnrichedGood"
+}
+
+variable "enrich_stream_out_bad" {
+  default = "SnowplowEnrichedBad"
+}
+
+variable "enrich_stream_out_min_backoff" {
+  default = 1000
+}
+
+variable "enrich_stream_out_max_backoff" {
+  default = 5000
+}
+
+variable "enrich_app_name" {
+  default = "SnowplowKinesisEnrich-Good"
+}

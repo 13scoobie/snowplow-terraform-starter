@@ -10,9 +10,7 @@ The documentation is written with [Terraform](https://www.terraform.io/)
 
 This repository may double as way to quickly create a working Snowplow Analytics stack.
 
-**Note:**
-
-Due to the extreme levels of customization that can happen in such a stack, I cannot promise that this setup will fit your exact needs.
+**Note:** Due to the extreme levels of customization that can happen in such a stack, I cannot promise that this setup will fit your exact needs.
 
 I encourage you to look through this, understand it, and modify it as you need.
 

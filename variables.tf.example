@@ -76,6 +76,18 @@ variable "collector_kinesis_sink_bad" {
   default = "SnowplowCollector-Bad"
 }
 
+variable "collector_sink_byte_thresh" {
+  default = 10240
+}
+
+variable "collector_sink_record_thresh" {
+  default = 100
+}
+
+variable "collector_sink_time_thresh" {
+  default = 5000
+}
+
 variable "collector_kinesis_min_backoff" {
   default = 1000
 }

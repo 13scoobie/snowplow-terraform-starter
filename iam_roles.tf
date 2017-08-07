@@ -44,11 +44,25 @@ resource "aws_iam_role_policy" "CollectorPolicy" {
         {
             "Effect": "Allow",
             "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams",
                 "kinesis:PutRecord",
                 "kinesis:PutRecords"
             ],
             "Resource": [
                 "${aws_kinesis_stream.CollectorGood.arn}"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams",
+                "kinesis:PutRecord",
+                "kinesis:PutRecords"
+            ],
+            "Resource": [
+                "${aws_kinesis_stream.CollectorBad.arn}"
             ]
         }
     ]
@@ -109,11 +123,25 @@ resource "aws_iam_role_policy" "EnrichPolicy" {
         {
             "Effect": "Allow",
             "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams",
                 "kinesis:PutRecord",
                 "kinesis:PutRecords"
             ],
             "Resource": [
                 "${aws_kinesis_stream.EnrichGood.arn}"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams",
+                "kinesis:PutRecord",
+                "kinesis:PutRecords"
+            ],
+            "Resource": [
+                "${aws_kinesis_stream.EnrichBad.arn}"
             ]
         }
     ]

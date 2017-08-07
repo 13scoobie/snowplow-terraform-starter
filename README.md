@@ -6,6 +6,8 @@ This repository is intended to be documentation of what a Snowplow (Scala Stream
 
 The documentation is written with [Terraform](https://www.terraform.io/)
 
+The documentation is written for [Snowplow Analytics](https://snowplowanalytics.com/)
+
 ## Terraform as a Starter
 
 This repository may double as way to quickly create a working Snowplow Analytics stack.

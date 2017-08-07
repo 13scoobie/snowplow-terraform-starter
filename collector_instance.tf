@@ -76,7 +76,7 @@ resource "aws_instance" "Collector" {
       "unzip snowplow_scala_stream_collector_${var.collector_version}.zip",
       "chmod +x snowplow-stream-collector-${var.collector_version}",
       "sudo nohup ./snowplow-stream-collector-${var.collector_version} --config config.hocon &",
-      "sleep 5"
+      "sleep 30"
     ]
 
     connection {

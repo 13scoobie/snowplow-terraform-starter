@@ -66,7 +66,7 @@ resource "aws_instance" "Enrich" {
       "unzip snowplow_stream_enrich_${var.enrich_version}.zip",
       "chmod +x snowplow-stream-enrich-${var.enrich_version}",
       "sudo nohup ./snowplow-stream-enrich-${var.enrich_version} --config config.hocon --resolver resolver.json &",
-      "sleep 2"
+      "sleep 30"
     ]
 
     connection {

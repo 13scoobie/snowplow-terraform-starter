@@ -78,7 +78,7 @@ resource "aws_instance" "S3Sink" {
       "unzip kinesis_s3_${var.s3_sink_version}.zip",
       "chmod +x snowplow-kinesis-s3-${var.s3_sink_version}",
       "sudo nohup ./snowplow-kinesis-s3-${var.s3_sink_version} --config config.hocon &",
-      "sleep 2"
+      "sleep 30"
     ]
 
     connection {

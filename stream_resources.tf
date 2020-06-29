@@ -1,38 +1,38 @@
-resource "aws_dynamodb_table" "EnrichApp" {
-  name           = "${var.enrich_app_name}"
-  read_capacity  = 5
-  write_capacity = 5
-  hash_key       = "id"
+# resource "aws_dynamodb_table" "EnrichApp" {
+#   name           = "${var.enrich_app_name}"
+#   read_capacity  = 5
+#   write_capacity = 5
+#   hash_key       = "id"
+#
+#   attribute {
+#     name = "id"
+#     type = "S"
+#   }
+#
+#   tags = {
+#     Name        = "${var.enrich_app_name}"
+#     Environment = "production"
+#     SnowplowProccess = "enrich"
+#   }
+# }
 
-  attribute {
-    name = "id"
-    type = "S"
-  }
-
-  tags {
-    Name        = "${var.enrich_app_name}"
-    Environment = "production"
-    SnowplowProccess = "enrich"
-  }
-}
-
-resource "aws_dynamodb_table" "S3SinkApp" {
-  name           = "${var.s3_sink_app_name}"
-  read_capacity  = 5
-  write_capacity = 5
-  hash_key       = "id"
-
-  attribute {
-    name = "id"
-    type = "S"
-  }
-
-  tags {
-    Name        = "${var.s3_sink_app_name}"
-    Environment = "production"
-    SnowplowProccess = "enrich"
-  }
-}
+# resource "aws_dynamodb_table" "S3SinkApp" {
+#   name           = "${var.s3_sink_app_name}"
+#   read_capacity  = 5
+#   write_capacity = 5
+#   hash_key       = "id"
+#
+#   attribute {
+#     name = "id"
+#     type = "S"
+#   }
+#
+#   # tags = {
+#   #   Name        = "${var.s3_sink_app_name}"
+#   #   Environment = "production"
+#   #   SnowplowProccess = "enrich"
+#   # }
+# }
 
 resource "aws_kinesis_stream" "CollectorGood" {
   name             = "${var.collector_kinesis_sink_good}"
@@ -44,7 +44,7 @@ resource "aws_kinesis_stream" "CollectorGood" {
     "OutgoingBytes",
   ]
 
-  tags {
+  tags = {
     Environment = "production"
     SnowplowProccess = "collector"
   }
@@ -60,7 +60,7 @@ resource "aws_kinesis_stream" "CollectorBad" {
     "OutgoingBytes",
   ]
 
-  tags {
+  tags = {
     Environment = "production"
     SnowplowProccess = "collector"
   }
@@ -76,7 +76,7 @@ resource "aws_kinesis_stream" "EnrichGood" {
     "OutgoingBytes",
   ]
 
-  tags {
+  tags = {
     Environment = "production"
     SnowplowProccess = "enrich"
   }
@@ -92,7 +92,7 @@ resource "aws_kinesis_stream" "EnrichBad" {
     "OutgoingBytes",
   ]
 
-  tags {
+  tags = {
     Environment = "production"
     SnowplowProccess = "enrich"
   }
@@ -108,7 +108,7 @@ resource "aws_kinesis_stream" "S3SinkBad" {
     "OutgoingBytes",
   ]
 
-  tags {
+  tags = {
     Environment = "production"
     SnowplowProccess = "sink"
   }

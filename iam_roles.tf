@@ -70,7 +70,6 @@ resource "aws_iam_role_policy" "CollectorPolicy" {
 EOF
 }
 
-
 resource "aws_iam_role" "Enrich" {
   name = "snowplow-enrich"
 
@@ -105,7 +104,8 @@ resource "aws_iam_role_policy" "EnrichPolicy" {
                 "kinesis:DescribeStream",
                 "kinesis:ListStreams",
                 "kinesis:GetShardIterator",
-                "kinesis:GetRecords"
+                "kinesis:GetRecords",
+                "kinesis:ListShards"
             ],
             "Resource": [
                 "${aws_kinesis_stream.CollectorGood.arn}"
@@ -117,7 +117,7 @@ resource "aws_iam_role_policy" "EnrichPolicy" {
                 "dynamodb:*"
             ],
             "Resource": [
-                "${aws_dynamodb_table.EnrichApp.arn}"
+                "*"
             ]
         },
         {
@@ -169,8 +169,6 @@ resource "aws_iam_role" "S3Sink" {
 EOF
 }
 
-
-
 resource "aws_iam_role_policy" "S3Sink" {
   name = "snowplow-sink-s3-policy"
   role = "${aws_iam_role.S3Sink.id}"
@@ -185,7 +183,8 @@ resource "aws_iam_role_policy" "S3Sink" {
                 "kinesis:DescribeStream",
                 "kinesis:ListStreams",
                 "kinesis:GetShardIterator",
-                "kinesis:GetRecords"
+                "kinesis:GetRecords",
+                "kinesis:ListShards"
             ],
             "Resource": [
                 "${aws_kinesis_stream.EnrichGood.arn}"
@@ -194,10 +193,22 @@ resource "aws_iam_role_policy" "S3Sink" {
         {
             "Effect": "Allow",
             "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams",
+                "kinesis:PutRecord",
+                "kinesis:PutRecords"
+            ],
+            "Resource": [
+                "${aws_kinesis_stream.S3SinkBad.arn}"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "dynamodb:*"
             ],
             "Resource": [
-                "${aws_dynamodb_table.S3SinkApp.arn}"
+                "*"
             ]
         },
         {

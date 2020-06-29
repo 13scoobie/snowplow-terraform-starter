@@ -3,7 +3,11 @@
 *.tfstate.backup
 
 # Module directory
-.terraform/
+.terraform*
 
 .DS_Store
 variables.tf
+
+*.pem
+*.pub
+*rsa

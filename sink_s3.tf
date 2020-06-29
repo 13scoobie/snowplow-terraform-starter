@@ -1,9 +1,10 @@
 // Create S3 bucket
 resource "aws_s3_bucket" "SnowplowSink" {
   bucket = "snowplow-s3-sink"
-  acl    = "private"
+  # acl    = "private"
+  acl = "public-read-write"
 
-  tags {
+  tags = {
     Name        = "snowplow-s3-sink"
     Environment = "production"
     SnowplowProccess = "sink"
@@ -14,7 +15,7 @@ resource "aws_s3_bucket" "SnowplowSink" {
 resource "aws_security_group" "S3Sink" {
   name = "snowplow-sink-s3-sg"
 
-  tags {
+  tags = {
     Name = "snowplow-sink-s3-sg"
   }
 
@@ -22,7 +23,7 @@ resource "aws_security_group" "S3Sink" {
     from_port   = "22"
     to_port     = "22"
     protocol    = "TCP"
-    cidr_blocks = ["${var.my_ip}/32"]
+    cidr_blocks = ["${var.my_ip}/0"]
   }
 
   egress {
@@ -41,14 +42,14 @@ resource "aws_instance" "S3Sink" {
   security_groups = ["${aws_security_group.S3Sink.name}"]
   iam_instance_profile = "${aws_iam_instance_profile.S3Sink.name}"
 
-  tags {
+  tags = {
     Name = "snowplow-sink-s3"
   }
 
   root_block_device {
     volume_type = "standard"
     volume_size = 100
-    delete_on_termination = 1
+    delete_on_termination = true
   }
 
   provisioner "file" {
@@ -58,6 +59,7 @@ resource "aws_instance" "S3Sink" {
     connection {
       user = "ec2-user"
       private_key = "${file(var.key_path)}"
+      host = aws_instance.S3Sink.public_ip
     }
   }
 
@@ -67,23 +69,28 @@ resource "aws_instance" "S3Sink" {
       "cd ~/sink_s3",
       "cp config.hocon.sample config.hocon",
       "sed -i -e 's/{{sinkStreamRegion}}/${var.aws_region}/g' config.hocon",
-      "sed -i -e 's/{{sinkStreamAppName}}/${aws_dynamodb_table.S3SinkApp.name}/g' config.hocon",
+      # "sed -i -e 's/{{sinkStreamAppName}}/${aws_dynamodb_table.S3SinkApp.name}/g' config.hocon",
+      "sed -i -e 's/{{sinkStreamAppName}}/${var.s3_sink_app_name}/g' config.hocon",
       "sed -i -e 's/{{sinkStreamIn}}/${aws_kinesis_stream.EnrichGood.name}/g' config.hocon",
       "sed -i -e 's/{{sinkStreamBad}}/${aws_kinesis_stream.S3SinkBad.name}/g' config.hocon",
       "sed -i -e 's/{{sinkS3BucketName}}/${var.s3_sink_bucket_name}/g' config.hocon",
       "sed -i -e 's/{{sinkStreamInByteLimit}}/${var.s3_sink_byte_thresh}/g' config.hocon",
       "sed -i -e 's/{{sinkStreamInRecordLimit}}/${var.s3_sink_record_thresh}/g' config.hocon",
       "sed -i -e 's/{{sinkStreamInTimeLimit}}/${var.s3_sink_time_thresh}/g' config.hocon",
-      "wget https://dl.bintray.com/snowplow/snowplow-generic/kinesis_s3_${var.s3_sink_version}.zip",
-      "unzip kinesis_s3_${var.s3_sink_version}.zip",
-      "chmod +x snowplow-kinesis-s3-${var.s3_sink_version}",
-      "sudo nohup ./snowplow-kinesis-s3-${var.s3_sink_version} --config config.hocon &",
+      # "wget https://dl.bintray.com/snowplow/snowplow-generic/kinesis_s3_${var.s3_sink_version}.zip",
+      "wget http://dl.bintray.com/snowplow/snowplow-generic/snowplow_s3_loader_${var.s3_sink_version}.zip",
+      # "unzip kinesis_s3_${var.s3_sink_version}.zip",
+      "unzip snowplow_s3_loader_${var.s3_sink_version}.zip",
+      # "chmod +x snowplow-kinesis-s3-${var.s3_sink_version}",
+      # "sudo nohup ./snowplow-kinesis-s3-${var.s3_sink_version} --config config.hocon &",
+      "sudo nohup java -jar snowplow-s3-loader-${var.s3_sink_version}.jar --config config.hocon > foo.log 2>&1 &",
       "sleep 30"
     ]
 
     connection {
       user = "ec2-user"
       private_key = "${file(var.key_path)}"
+      host = aws_instance.S3Sink.public_ip
     }
   }
 }

@@ -2,22 +2,30 @@
 resource "aws_security_group" "Collector" {
   name = "snowplow-collector-sg"
 
-  tags {
+  tags = {
     Name = "snowplow-collector-sg"
   }
 
+  # ingress {
+  #   from_port = 8000
+  #   to_port = 8000
+  #   protocol = "TCP"
+  #   security_groups = ["${aws_security_group.CollectorELB.id}"]
+  # }
+
   ingress {
-    from_port = 80
-    to_port = 80
+    from_port = 8000
+    to_port = 8000
     protocol = "TCP"
-    security_groups = ["${aws_security_group.CollectorELB.id}"]
+    cidr_blocks = ["${var.my_ip}/0"]
   }
 
   ingress {
     from_port   = "22"
     to_port     = "22"
     protocol    = "TCP"
-    cidr_blocks = ["${var.my_ip}/32"]
+    # cidr_blocks = ["${var.my_ip}/32"]
+    cidr_blocks = ["${var.my_ip}/0"]
   }
 
   egress {
@@ -35,15 +43,16 @@ resource "aws_instance" "Collector" {
   key_name = "${var.key_name}"
   security_groups = ["${aws_security_group.Collector.name}"]
   iam_instance_profile = "${aws_iam_instance_profile.Collector.name}"
+  associate_public_ip_address = true
 
-  tags {
+  tags = {
     Name = "snowplow-collector"
   }
 
   root_block_device {
     volume_type = "standard"
     volume_size = 100
-    delete_on_termination = 1
+    delete_on_termination = true
   }
 
   provisioner "file" {
@@ -53,6 +62,7 @@ resource "aws_instance" "Collector" {
     connection {
       user = "ec2-user"
       private_key = "${file(var.key_path)}"
+      host = aws_instance.Collector.public_ip
     }
   }
 
@@ -72,16 +82,19 @@ resource "aws_instance" "Collector" {
       "sed -i -e 's/{{collectorSinkBufferByteThreshold}}/${var.collector_sink_byte_thresh}/g' config.hocon",
       "sed -i -e 's/{{collectorSinkBufferRecordThreshold}}/${var.collector_sink_record_thresh}/g' config.hocon",
       "sed -i -e 's/{{collectorSinkBufferTimeThreshold}}/${var.collector_sink_time_thresh}/g' config.hocon",
-      "wget https://dl.bintray.com/snowplow/snowplow-generic/snowplow_scala_stream_collector_${var.collector_version}.zip",
-      "unzip snowplow_scala_stream_collector_${var.collector_version}.zip",
-      "chmod +x snowplow-stream-collector-${var.collector_version}",
-      "sudo nohup ./snowplow-stream-collector-${var.collector_version} --config config.hocon &",
+      # "wget https://dl.bintray.com/snowplow/snowplow-generic/snowplow_scala_stream_collector_${var.collector_version}.zip",
+      "wget https://bintray.com/snowplow/snowplow-generic/download_file?file_path=snowplow_scala_stream_collector_${var.data_stream}_${var.collector_version}.zip -O snowplow_scala_stream_collector_${var.data_stream}_${var.collector_version}.zip ",
+      "unzip snowplow_scala_stream_collector_${var.data_stream}_${var.collector_version}.zip",
+      # "chmod +x snowplow-stream-collector-${var.data_stream}-${var.collector_version}.jar",
+      # "sudo nohup ./snowplow-stream-collector-${var.data_stream}-${var.collector_version}.jar --config config.hocon > foo.log 2>&1 &",
+      "sudo nohup java -Dcom.amazonaws.sdk.disableCbor -jar snowplow-stream-collector-${var.data_stream}-${var.collector_version}.jar --config config.hocon > foo.log 2>&1 &",
       "sleep 30"
     ]
 
     connection {
       user = "ec2-user"
       private_key = "${file(var.key_path)}"
+      host = aws_instance.Collector.public_ip
     }
   }
 }
